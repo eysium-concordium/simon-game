@@ -4,6 +4,11 @@ Simon is an electronic game of short-term memory skill. Play the intresting game
 
 [Play Game](https://subhranshuchoudhury.github.io/simon-game)
 
+# Tech Stack
+ - HTML
+ - CSS
+ - JS
+
 # Screenshots
 
 ![Screenshot_20220428_101944](https://user-images.githubusercontent.com/63858190/165680068-a46436f4-c30d-4e8e-b59e-505b34284ddf.png)
