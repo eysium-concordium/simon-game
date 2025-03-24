@@ -44,52 +44,123 @@ class SimonGame {
         this.initializeAudio();
     }
 
-    async initializeAudio() {
+    initializeAudio() {
         try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            await this.loadSounds();
+            // Create audio context only when needed
+            if (!this.audioContext) {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                // Resume audio context on user interaction
+                document.addEventListener('click', () => {
+                    if (this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
+                    }
+                }, { once: true });
+            }
+            this.loadSounds();
         } catch (error) {
             console.error('Audio initialization failed:', error);
             this.soundEnabled = false;
         }
     }
 
-    async loadSounds() {
-        const soundFiles = {
-            green: 'green.mp3',
-            red: 'red.mp3',
-            yellow: 'yellow.mp3',
-            blue: 'blue.mp3',
-            wrong: 'wrong.mp3',
-            success: 'success.mp3',
-            gameOver: 'gameover.mp3'
-        };
+    loadSounds() {
+        try {
+            // Create oscillator for each color
+            const colors = ['green', 'red', 'yellow', 'blue'];
+            const frequencies = [440, 880, 660, 550]; // Different frequencies for each color
 
-        for (const [key, file] of Object.entries(soundFiles)) {
-            try {
-                const response = await fetch(`sounds/${file}`);
-                const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-                this.sounds[key] = audioBuffer;
-            } catch (error) {
-                console.error(`Failed to load sound ${key}:`, error);
-            }
+            colors.forEach((color, index) => {
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequencies[index], this.audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                // Store the nodes
+                this.sounds[color] = {
+                    oscillator,
+                    gainNode,
+                    isPlaying: false
+                };
+            });
+
+            // Create success sound
+            const successOscillator = this.audioContext.createOscillator();
+            const successGainNode = this.audioContext.createGain();
+            
+            successOscillator.type = 'sine';
+            successOscillator.frequency.setValueAtTime(880, this.audioContext.currentTime);
+            successGainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+            
+            successOscillator.connect(successGainNode);
+            successGainNode.connect(this.audioContext.destination);
+            
+            this.sounds.success = {
+                oscillator: successOscillator,
+                gainNode: successGainNode,
+                isPlaying: false
+            };
+
+            // Create game over sound
+            const gameOverOscillator = this.audioContext.createOscillator();
+            const gameOverGainNode = this.audioContext.createGain();
+            
+            gameOverOscillator.type = 'sine';
+            gameOverOscillator.frequency.setValueAtTime(220, this.audioContext.currentTime);
+            gameOverGainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+            
+            gameOverOscillator.connect(gameOverGainNode);
+            gameOverGainNode.connect(this.audioContext.destination);
+            
+            this.sounds.gameOver = {
+                oscillator: gameOverOscillator,
+                gainNode: gameOverGainNode,
+                isPlaying: false
+            };
+
+        } catch (error) {
+            console.error('Sound loading failed:', error);
+            this.soundEnabled = false;
         }
     }
 
-    playSound(color) {
-        if (!this.soundEnabled || !this.sounds[color]) return;
-        
-        const source = this.audioContext.createBufferSource();
-        source.buffer = this.sounds[color];
-        source.connect(this.audioContext.destination);
-        source.start(0);
+    playSound(type) {
+        if (!this.soundEnabled || !this.sounds[type]) return;
+
+        try {
+            const sound = this.sounds[type];
+            if (sound.isPlaying) return;
+
+            sound.isPlaying = true;
+            const now = this.audioContext.currentTime;
+
+            // Start the sound
+            sound.oscillator.start(now);
+            sound.gainNode.gain.setValueAtTime(0.3, now);
+
+            // Stop the sound after a short duration
+            sound.oscillator.stop(now + 0.1);
+            sound.gainNode.gain.setValueAtTime(0, now + 0.1);
+
+            // Reset the playing state after the sound finishes
+            setTimeout(() => {
+                sound.isPlaying = false;
+            }, 100);
+
+        } catch (error) {
+            console.error('Sound playback failed:', error);
+        }
     }
 
     toggleSound() {
         this.soundEnabled = !this.soundEnabled;
-        this.soundToggle.textContent = this.soundEnabled ? '🔊 Sound On' : '🔈 Sound Off';
-        localStorage.setItem('simonSoundEnabled', this.soundEnabled);
+        const soundToggle = document.querySelector('.sound-toggle');
+        soundToggle.textContent = this.soundEnabled ? '🔊 Sound On' : '🔈 Sound Off';
+        localStorage.setItem('soundEnabled', this.soundEnabled);
     }
 
     initializeGame() {
