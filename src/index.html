@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Simon Game</h1>
+            <button class="sound-toggle">🔊 Sound On</button>
+        </header>
+        
+        <div class="game-stats">
+            <div class="score">Score: 0</div>
+            <div class="high-score">High Score: 0</div>
+        </div>
+        
+        <div class="game-modes">
+            <button class="mode-btn active" data-mode="classic">Classic Mode</button>
+            <button class="mode-btn" data-mode="create">Create Sequence</button>
+            <button class="mode-btn" data-mode="multiplayer">Multiplayer</button>
+        </div>
+        
+        <div class="game-container">
+            <div class="row">
+                <div class="btn green" data-color="green"></div>
+                <div class="btn red" data-color="red"></div>
+            </div>
+            <div class="row">
+                <div class="btn yellow" data-color="yellow"></div>
+                <div class="btn blue" data-color="blue"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="s-btn">Start Game</button>
+            <div class="display">Press Start to Play!</div>
+        </div>
+        
+        <div class="difficulty">
+            <button class="difficulty-btn active" data-speed="normal">Normal</button>
+            <button class="difficulty-btn" data-speed="fast">Fast</button>
+            <button class="difficulty-btn" data-speed="expert">Expert</button>
+        </div>
+        
+        <div class="multiplayer-setup" style="display: none;">
+            <h3>Player Setup</h3>
+            <div class="player-colors">
+                <div class="player-input">
+                    <label>Player 1:</label>
+                    <select class="player1-color">
+                        <option value="green">Green</option>
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="blue">Blue</option>
+                    </select>
+                </div>
+                <div class="player-input">
+                    <label>Player 2:</label>
+                    <select class="player2-color">
+                        <option value="red">Red</option>
+                        <option value="green">Green</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="blue">Blue</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with <a href="https://github.com/Ayush-Raj-Chourasia">Contributor</a></p>
+            <p>Press any key to start</p>
+        </footer>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html> 
