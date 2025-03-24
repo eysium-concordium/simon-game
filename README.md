@@ -16,10 +16,10 @@ A modern implementation of the classic Simon memory game with multiple game mode
 ## Screenshots
 
 ### Game Interface
-![Simon Game Interface](image\image1.png)
+![Simon Game Interface](image/image1.png)
 
 ### Game Modes
-![Game Modes](image\image2.png)
+![Game Modes](image/image2.png)
 
 
 ## Installation
@@ -93,7 +93,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-Created with ❤️ by iters
+Created with ❤️
 
 @ Subhranshu sekhar choudhury.
 
