@@ -1,149 +1,162 @@
-// I know that this code is not the good one.
-// But i created it from scratch. you can easily understand the code
-// For code of professionals: https://github.com/subhranshuchoudhury/My-Js-Notes/blob/main/Challenge/Simon%20Game%20jQuery%20JS/game.js
-// Enjoyed a lot while making the game.
-
-/****************************************/
 var keys = ["red", "green", "yellow", "blue"];
 var computerArrayRecord = [];
 var userArrayRecord = [];
 var buttons = document.querySelectorAll(".btn");
 var startButton = document.querySelector(".s-btn");
 var display = document.querySelector(".display");
-/**************/
+
 var level = 0;
-var flag = 0;
 var isGameStarted = false;
 var score = 0;
-var counter = 0;
+var lives = 3;
 
-/**************/
-
+/* Start Game */
 function startGame() {
-    if (isGameStarted == false) {
-        document.body.style.backgroundColor = "#2A2550";
-        display.innerHTML = "Remember the blinked colors and repeat them from first blink."
-    }
-    while (counter == 0) {
-        userArrayRecord = [];
-        $(".score").text("Score: 0");
-        counter++;
-    }
-    isGameStarted = true;
-    var randomKey = Math.floor(Math.random() * 4);
-    playSound(keys[randomKey]);
-    $("." + keys[randomKey]).fadeIn(100).fadeOut(100).fadeIn(100);
-    computerArrayRecord.push(keys[randomKey]);
-    console.log('computer', computerArrayRecord);
-    startButton.style.display = "none"
+  if (!isGameStarted) {
+    document.body.style.backgroundColor = "#2A2550";
+    display.innerHTML = "Remember the blinked colors and repeat them.";
+    $(".lives").text("Lives: " + lives);
+    $(".score").text("Score: 0");
+  }
+
+  isGameStarted = true;
+  userArrayRecord = [];
+  playSequence();
+  startButton.style.display = "none";
 }
 
-/*****************************************/
-
+/* Event Listeners for Buttons */
 for (let i = 0; i < 4; i++) {
-    buttons[i].addEventListener("click", function(e) {
-        if (isGameStarted) {
-            userArrayRecord.push(e.target.innerHTML);
-            playSound(e.target.innerHTML);
-            selectedAnimation(e.target.innerHTML);
-            instantChecker();
-            if (computerArrayRecord.length == userArrayRecord.length) {
-                gameManager();
-            }
-        } else {
-            userArrayRecord = []; // disbale click before click start button.
-        }
+  buttons[i].addEventListener("click", function (e) {
+    if (isGameStarted) {
+      userArrayRecord.push(e.target.innerHTML);
+      playSound(e.target.innerHTML);
+      selectedAnimation(e.target.innerHTML);
+      instantChecker();
 
-
-    });
+      if (computerArrayRecord.length === userArrayRecord.length) {
+        setTimeout(gameManager, 500);
+      }
+    }
+  });
 }
 
-/****************************************/
-
-
+/* Game Logic */
 function gameManager() {
-    for (let i = 0; i < computerArrayRecord.length; i++) {
-        if (computerArrayRecord[i] == userArrayRecord[i]) {
-            // console.log("correct! index: ",computerArrayRecord[i]);
-        } else {
-            flag++;
-        }
+  let isCorrect = true;
+
+  for (let i = 0; i < userArrayRecord.length; i++) {
+    if (computerArrayRecord[i] !== userArrayRecord[i]) {
+      isCorrect = false;
+      break;
     }
-    if (flag != 0) {
-        console.log("gameOver!");
-        gameOver();
+  }
+
+  if (!isCorrect) {
+    lives--;
+    $(".lives").text("Lives: " + lives);
+
+    if (lives > 0) {
+      display.innerHTML = `Wrong move! ${lives} lives left. Try again.`;
+      playSound("wrong");
+      userArrayRecord = [];
     } else {
-        console.log("Level Up!");
-        gameContinue()
+      gameOver();
     }
-    userArrayRecord = [];
+  } else {
+    setTimeout(gameContinue, 1000);
+  }
 }
 
-/**************************************/
-
+/* Game Over */
 function gameOver() {
-    // display game over
-    computerArrayRecord = [];
-    level = 0;
-    flag = 0;
-    isGameStarted = false;
-    counter = 0;
-    score = 0;
-    playSound("wrong")
-    display.innerHTML = "Game Over!";
-    document.body.style.backgroundColor = 'red';
-    startButton.style.display = "";
-    startButton.innerHTML = "Restart Game!"
-    for (let i = 0; i < 4; i++) {
-        buttons[i].style.background = "";
-    }
+  computerArrayRecord = [];
+  level = 0;
+  isGameStarted = false;
+  score = 0;
+  lives = 3;
+
+  playSound("wrong");
+  display.innerHTML = "Game Over! You ran out of lives.";
+  $("body").css("animation", "flicker 1s infinite alternate");
+
+  setTimeout(() => {
+    $("body").css("animation", "");
+    document.body.style.backgroundColor = "#2A2550";
+  }, 2000);
+
+  startButton.style.display = "";
+  startButton.innerHTML = "Restart Game!";
+  $(".lives").text("Lives: " + lives);
 }
 
-/************************************/
-
+/* Continue Game */
 function gameContinue() {
-
-    level++;
-    display.innerHTML = "Level: " + level;
-
-    setTimeout(function() {
-
-        startGame();
-
-    }, 1000);
-
+  level++;
+  display.innerHTML = "Level: " + level;
+  setTimeout(playSequence, 1000);
 }
 
-/************************************/
+/* Play Sequence with Glow Effect */
+function playSequence() {
+  var randomKey = Math.floor(Math.random() * 4);
+  computerArrayRecord.push(keys[randomKey]);
 
+  userArrayRecord = [];
 
-function instantChecker() {
-    for (let i = 0; i < userArrayRecord.length; i++) {
-        if (computerArrayRecord[i] == userArrayRecord[i]) {
-            score++;
-            $(".score").text("Score: " + score);
-            console.log("Correct enter!")
-        } else {
-            console.log("Game Over!");
-            $(".score").text("Last Score: " + score);
-            gameOver();
-        }
+  let i = 0;
+  function blinkNextColor() {
+    if (i < computerArrayRecord.length) {
+      let color = computerArrayRecord[i];
+      playSound(color);
+
+      let button = $("." + color);
+      button.addClass("glow-effect");
+      setTimeout(() => {
+        button.removeClass("glow-effect");
+      }, 300);
+
+      i++;
+      setTimeout(blinkNextColor, 600);
     }
+  }
+  blinkNextColor();
 }
 
-/************************************/
+/* Instant Check on User Click */
+function instantChecker() {
+  for (let i = 0; i < userArrayRecord.length; i++) {
+    if (computerArrayRecord[i] !== userArrayRecord[i]) {
+      lives--;
+      $(".lives").text("Lives: " + lives);
 
+      if (lives > 0) {
+        display.innerHTML = `Wrong move! ${lives} lives left. Try again.`;
+        playSound("wrong");
+        userArrayRecord = [];
+      } else {
+        $(".score").text("Last Score: " + score);
+        gameOver();
+      }
+      return;
+    }
+  }
+
+  score++;
+  $(".score").text("Score: " + score);
+}
+
+/* Play Sound */
 function playSound(name) {
-    var audio = new Audio(`sounds/${name}.mp3`);
-    audio.play();
-    audio.currentTime = 0;
-};
+  var audio = new Audio(`sounds/${name}.mp3`);
+  audio.play();
+  audio.currentTime = 0;
+}
 
-/*************************************/
-
+/* Button Animation */
 function selectedAnimation(colorName) {
-    $("." + colorName).addClass("selected");
-    setTimeout(function() {
-        $("." + colorName).removeClass("selected");
-    }, 100);
+  $("." + colorName).addClass("glow-effect");
+  setTimeout(() => {
+    $("." + colorName).removeClass("glow-effect");
+  }, 100);
 }
