@@ -6,7 +6,7 @@ class SimonGame {
         this.level = 0;
         this.score = 0;
         this.isPlaying = false;
-        this.highScore = localStorage.getItem('simonHighScore') || 0;
+        this.highScore = parseInt(localStorage.getItem('simonHighScore')) || 0;
         this.currentMode = 'classic';
         this.currentSpeed = 'normal';
         this.playerColors = {
@@ -42,6 +42,13 @@ class SimonGame {
         // Initialize
         this.initializeGame();
         this.initializeAudio();
+
+        // Update speed settings
+        this.speeds = {
+            normal: { fadeTime: 300, sequenceDelay: 800 },
+            fast: { fadeTime: 200, sequenceDelay: 400 },
+            expert: { fadeTime: 100, sequenceDelay: 200 }
+        };
     }
 
     initializeAudio() {
@@ -266,21 +273,36 @@ class SimonGame {
     }
 
     async showSequence() {
+        this.display.textContent = `Level ${this.level}`;
+        
+        // Prevent player input during sequence display
+        this.buttons.forEach(btn => btn.style.pointerEvents = 'none');
+        
         for (const color of this.computerSequence) {
             await this.playColor(color);
         }
+        
+        // Re-enable player input
+        this.buttons.forEach(btn => btn.style.pointerEvents = 'auto');
+        this.display.textContent = "Your turn!";
     }
 
     async playColor(color) {
         return new Promise(resolve => {
             this.playSound(color);
             const button = document.querySelector(`.${color}`);
+            const speed = this.speeds[this.currentSpeed];
+            
+            // Add fade animation
+            button.style.transition = `opacity ${speed.fadeTime}ms`;
             button.classList.add('active');
             
             setTimeout(() => {
                 button.classList.remove('active');
-                resolve();
-            }, this.getSpeedDelay());
+                
+                // Add delay between sequence colors
+                setTimeout(resolve, speed.sequenceDelay - speed.fadeTime);
+            }, speed.fadeTime);
         });
     }
 
@@ -289,17 +311,10 @@ class SimonGame {
         
         const color = event.target.classList[1];
         this.playerSequence.push(color);
-        this.playSound(color);
-        this.playColor(color);
         
-        if (this.currentMode === 'create') {
-            this.computerSequence = [...this.playerSequence];
-            this.display.textContent = "Sequence saved! Press Start to play it back.";
-            this.isPlaying = false;
-            this.startButton.style.display = "block";
-            this.startButton.textContent = "Play Sequence";
-            return;
-        }
+        // Visual and audio feedback
+        this.playSound(color);
+        this.animateButton(color);
         
         this.checkSequence();
     }
@@ -356,15 +371,15 @@ class SimonGame {
         this.playSound('gameOver');
         document.body.style.backgroundColor = 'red';
         
-        let gameOverMessage = 'Game Over!';
-        if (this.currentMode === 'multiplayer') {
-            const remainingPlayers = ['player1', 'player2'].filter(p => !this.eliminatedPlayers.has(p));
-            if (remainingPlayers.length === 1) {
-                gameOverMessage = `${remainingPlayers[0]} wins!`;
-            }
-        }
+        // Show final score and level
+        this.display.textContent = `Game Over! Level ${this.level} - Score: ${this.score}`;
         
-        this.display.textContent = gameOverMessage;
+        // Animate buttons for game over effect
+        this.buttons.forEach(btn => {
+            btn.classList.add('game-over');
+            setTimeout(() => btn.classList.remove('game-over'), 500);
+        });
+        
         this.startButton.style.display = "block";
         this.startButton.textContent = "Play Again";
         this.updateHighScore();
@@ -379,6 +394,16 @@ class SimonGame {
             this.highScore = this.score;
             localStorage.setItem('simonHighScore', this.highScore);
         }
+    }
+
+    animateButton(color) {
+        const button = document.querySelector(`.${color}`);
+        const speed = this.speeds[this.currentSpeed];
+        
+        button.classList.add('active');
+        setTimeout(() => {
+            button.classList.remove('active');
+        }, speed.fadeTime);
     }
 }
 
