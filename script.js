@@ -1,7 +1,4 @@
-// I know that this code is not the good one.
-// But i created it from scratch. you can easily understand the code
-// For code of professionals: https://github.com/subhranshuchoudhury/My-Js-Notes/blob/main/Challenge/Simon%20Game%20jQuery%20JS/game.js
-// Enjoyed a lot while making the game.
+
 
 /****************************************/
 var keys = ["red", "green", "yellow", "blue"];
