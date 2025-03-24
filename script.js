@@ -1,45 +1,31 @@
-// I know that this code is not the best.
-// But I created it from scratch. You can easily understand it.
-// Enjoyed a lot while making the game.
-
-/****************************************/
 var keys = ["red", "green", "yellow", "blue"];
 var computerArrayRecord = [];
 var userArrayRecord = [];
 var buttons = document.querySelectorAll(".btn");
 var startButton = document.querySelector(".s-btn");
 var display = document.querySelector(".display");
-/**************/
+
 var level = 0;
 var isGameStarted = false;
 var score = 0;
-var counter = 0;
 var lives = 3;
 
-/**************/
-
+/* Start Game */
 function startGame() {
   if (!isGameStarted) {
     document.body.style.backgroundColor = "#2A2550";
-    display.innerHTML =
-      "Remember the blinked colors and repeat them from first blink.";
+    display.innerHTML = "Remember the blinked colors and repeat them.";
     $(".lives").text("Lives: " + lives);
-  }
-
-  while (counter === 0) {
-    userArrayRecord = [];
     $(".score").text("Score: 0");
-    counter++;
   }
 
   isGameStarted = true;
-  userArrayRecord = []; // Ensure user input resets before new round starts
+  userArrayRecord = [];
   playSequence();
   startButton.style.display = "none";
 }
 
-/*****************************************/
-
+/* Event Listeners for Buttons */
 for (let i = 0; i < 4; i++) {
   buttons[i].addEventListener("click", function (e) {
     if (isGameStarted) {
@@ -47,18 +33,18 @@ for (let i = 0; i < 4; i++) {
       playSound(e.target.innerHTML);
       selectedAnimation(e.target.innerHTML);
       instantChecker();
+
       if (computerArrayRecord.length === userArrayRecord.length) {
-        setTimeout(gameManager, 500); // Add delay before next level starts
+        setTimeout(gameManager, 500);
       }
     }
   });
 }
 
-/****************************************/
-
+/* Game Logic */
 function gameManager() {
-  // changed the flag to boolean
   let isCorrect = true;
+
   for (let i = 0; i < userArrayRecord.length; i++) {
     if (computerArrayRecord[i] !== userArrayRecord[i]) {
       isCorrect = false;
@@ -69,77 +55,75 @@ function gameManager() {
   if (!isCorrect) {
     lives--;
     $(".lives").text("Lives: " + lives);
+
     if (lives > 0) {
       display.innerHTML = `Wrong move! ${lives} lives left. Try again.`;
       playSound("wrong");
-      userArrayRecord = []; // Let the player retry the same sequence
+      userArrayRecord = [];
     } else {
       gameOver();
     }
   } else {
-    console.log("Level Up!");
     setTimeout(gameContinue, 1000);
   }
 }
 
-/**************************************/
-
+/* Game Over */
 function gameOver() {
   computerArrayRecord = [];
   level = 0;
   isGameStarted = false;
-  counter = 0;
   score = 0;
-  lives = 3; // Reset lives
+  lives = 3;
 
   playSound("wrong");
   display.innerHTML = "Game Over! You ran out of lives.";
-  document.body.style.backgroundColor = "red";
+  $("body").css("animation", "flicker 1s infinite alternate");
+
+  setTimeout(() => {
+    $("body").css("animation", "");
+    document.body.style.backgroundColor = "#2A2550";
+  }, 2000);
+
   startButton.style.display = "";
   startButton.innerHTML = "Restart Game!";
   $(".lives").text("Lives: " + lives);
-
-  for (let i = 0; i < 4; i++) {
-    buttons[i].style.background = "";
-  }
 }
 
-/************************************/
-
+/* Continue Game */
 function gameContinue() {
   level++;
   display.innerHTML = "Level: " + level;
-  setTimeout(playSequence, 1000); // Ensure sequence blinks correctly
+  setTimeout(playSequence, 1000);
 }
 
-/************************************/
-
+/* Play Sequence with Glow Effect */
 function playSequence() {
   var randomKey = Math.floor(Math.random() * 4);
-  computerArrayRecord.push(keys[randomKey]); // Add new color to sequence
-  console.log("computer", computerArrayRecord);
+  computerArrayRecord.push(keys[randomKey]);
 
-  userArrayRecord = []; // Reset user input before playing sequence
+  userArrayRecord = [];
 
   let i = 0;
   function blinkNextColor() {
     if (i < computerArrayRecord.length) {
       let color = computerArrayRecord[i];
       playSound(color);
-      $("." + color)
-        .fadeIn(100)
-        .fadeOut(100)
-        .fadeIn(100);
+
+      let button = $("." + color);
+      button.addClass("glow-effect");
+      setTimeout(() => {
+        button.removeClass("glow-effect");
+      }, 300);
+
       i++;
-      setTimeout(blinkNextColor, 600); // Delay for next blink
+      setTimeout(blinkNextColor, 600);
     }
   }
-
-  blinkNextColor(); // Start blinking sequence
+  blinkNextColor();
 }
 
-/************************************/
-
+/* Instant Check on User Click */
 function instantChecker() {
   for (let i = 0; i < userArrayRecord.length; i++) {
     if (computerArrayRecord[i] !== userArrayRecord[i]) {
@@ -149,33 +133,30 @@ function instantChecker() {
       if (lives > 0) {
         display.innerHTML = `Wrong move! ${lives} lives left. Try again.`;
         playSound("wrong");
-        userArrayRecord = []; // Reset input for retry
+        userArrayRecord = [];
       } else {
         $(".score").text("Last Score: " + score);
         gameOver();
       }
-      return; // Stop checking further if a mistake is found
+      return;
     }
   }
 
-  // Update score if all inputs are correct
   score++;
   $(".score").text("Score: " + score);
 }
 
-/************************************/
-
+/* Play Sound */
 function playSound(name) {
   var audio = new Audio(`sounds/${name}.mp3`);
   audio.play();
   audio.currentTime = 0;
 }
 
-/*************************************/
-
+/* Button Animation */
 function selectedAnimation(colorName) {
-  $("." + colorName).addClass("selected");
-  setTimeout(function () {
-    $("." + colorName).removeClass("selected");
+  $("." + colorName).addClass("glow-effect");
+  setTimeout(() => {
+    $("." + colorName).removeClass("glow-effect");
   }, 100);
 }

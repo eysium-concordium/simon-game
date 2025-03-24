@@ -1,99 +1,252 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-body{
-	background: #2A2550;
-  font-family: 'Press Start 2P', cursive;
+/* @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+body {
+  background: #2a2550;
+  font-family: "Press Start 2P", cursive;
 }
 
-.game-title,h3{
-	text-align: center;
-	display: table;
-	margin: 10px;
-	color: #efef;
+.game-title,
+h3 {
+  text-align: center;
+  display: table;
+  margin: 10px;
+  color: #efef;
 }
-h3{
-	margin-top: 40px;
-	font-size: 17px;
-}
-
-.score{
-	color: yellow;
-
-}
-.btn-container{
-	margin: 60px auto 90px;
+h3 {
+  margin-top: 40px;
+  font-size: 17px;
 }
 
-.btn{
-	height: 100px;
-	width: 100px;
-	margin: 20px;
-	color: transparent;
-	border: none;
-	box-shadow: 5px 10px #251D3A;
-
+.score {
+  color: yellow;
 }
-.btn:hover{
-	cursor: pointer;
-	border: 3px solid white;
+.btn-container {
+  margin: 60px auto 90px;
 }
 
-.red{
-	background-color: red;
+.btn {
+  height: 100px;
+  width: 100px;
+  margin: 20px;
+  color: transparent;
+  border: none;
+  box-shadow: 5px 10px #251d3a;
+}
+.btn:hover {
+  cursor: pointer;
+  border: 3px solid white;
 }
 
-.green{
-	background-color: green;
+.red {
+  background-color: red;
 }
 
-.yellow{
-	background-color: yellow;
+.green {
+  background-color: green;
 }
 
-.blue{
-	background-color: blue;
+.yellow {
+  background-color: yellow;
 }
 
-.s-btn{
-  background: #251D3A;
+.blue {
+  background-color: blue;
+}
+
+.s-btn {
+  background: #251d3a;
   border-radius: 28px;
   color: #ffffff;
   font-weight: bold;
   font-size: 20px;
   padding: 10px 20px 10px 20px;
   text-decoration: none;
-	box-shadow: 5px 10px #251D3A;
-
+  box-shadow: 5px 10px #251d3a;
 }
-.s-btn:hover{
-  background: #FF7700;
-  
+.s-btn:hover {
+  background: #ff7700;
 }
 
-.footer a{
-	color: grey;
-	text-decoration: none;
-	padding: 20px;
-	font-size: 10px;
+.footer a {
+  color: grey;
+  text-decoration: none;
+  padding: 20px;
+  font-size: 10px;
 }
 
-.footer a:hover{
-	background-color: #251D3A;
-	color: #FF7700;
-	font-size: 11px;
+.footer a:hover {
+  background-color: #251d3a;
+  color: #ff7700;
+  font-size: 11px;
 }
 
-.footer{
-	text-align: center;
-	margin: 80px auto 10px;
+.footer {
+  text-align: center;
+  margin: 80px auto 10px;
 }
 
-.selected{
-	box-shadow: 0 0 20px white;
+.selected {
+  box-shadow: 0 0 20px white;
   background-color: grey;
 }
 
-.thanks{
-	margin: 20px auto 0;
-	font-size: 5px;
-	color: black;
+.thanks {
+  margin: 20px auto 0;
+  font-size: 5px;
+  color: black;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px white;
+    transform: scale(1.1);
+  }
+  50% {
+    box-shadow: 0 0 20px white;
+    transform: scale(1.2);
+  }
+  100% {
+    box-shadow: 0 0 10px white;
+    transform: scale(1.1);
+  }
+}
+
+.glow-effect {
+  animation: glow 0.3s ease-in-out;
+}
+
+.selected {
+  box-shadow: 0 0 20px white;
+  background-color: grey;
+} */
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+body {
+  background: radial-gradient(circle, #2a2550, #1b1335);
+  font-family: "Press Start 2P", cursive;
+  text-align: center;
+  color: white;
+}
+
+/* Title and Display Text */
+.game-title,
+h3 {
+  text-align: center;
+  margin: 10px;
+  color: #efef;
+}
+
+h3 {
+  margin-top: 40px;
+  font-size: 17px;
+}
+
+.score {
+  color: yellow;
+}
+
+/* Button Container */
+.btn-container {
+  margin: 60px auto 90px;
+}
+
+/* Game Buttons */
+.btn {
+  height: 120px;
+  width: 120px;
+  margin: 20px;
+  border-radius: 15px;
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  box-shadow: 0 0 25px white;
+}
+
+/* Color-Specific Buttons */
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.blue {
+  background-color: blue;
+}
+
+/* Glow Animation */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px white;
+    transform: scale(1.1);
+  }
+  50% {
+    box-shadow: 0 0 20px white;
+    transform: scale(1.2);
+  }
+  100% {
+    box-shadow: 0 0 10px white;
+    transform: scale(1.1);
+  }
+}
+
+.glow-effect {
+  animation: glow 0.3s ease-in-out;
+}
+
+/* Start Button */
+.s-btn {
+  background: #ff7700;
+  border-radius: 28px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 12px 25px;
+  text-decoration: none;
+  box-shadow: 5px 10px #251d3a;
+  transition: 0.3s ease-in-out;
+}
+
+.s-btn:hover {
+  background: #ff4500;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #ff7700;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin: 80px auto 10px;
+}
+
+.footer a {
+  color: grey;
+  text-decoration: none;
+  padding: 20px;
+  font-size: 10px;
+}
+
+.footer a:hover {
+  background-color: #251d3a;
+  color: #ff7700;
+  font-size: 11px;
+}
+
+/* Flicker Animation for Game Over */
+@keyframes flicker {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: #2a2550;
+  }
 }
