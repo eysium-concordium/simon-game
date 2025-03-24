@@ -38,6 +38,9 @@ h3 {
   border: 5px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
   transition: 0.2s ease-in-out;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: white;
+  font-size: 20px;
 }
 
 .btn:hover {
